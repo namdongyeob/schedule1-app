@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class UserService {
 
     @Transactional
     public CreateUserResponse create(CreateUserRequest request) {
-        User user = new User(request.getUsername(), request.getEmail());
+        User user = new User(request.getUsername(), request.getEmail(), request.getPassword());
         User savedUser = userRepository.save(user);
         return CreateUserResponse.from(savedUser);
     }
@@ -42,7 +41,7 @@ public class UserService {
     public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("해당 유저는 찾을수 없습니다."));
-        user.update(request.getUsername(), request.getEmail());
+        user.update(request.getUsername(), request.getEmail(), request.getPassword());
         return UpdateUserResponse.from(user);
     }
 
