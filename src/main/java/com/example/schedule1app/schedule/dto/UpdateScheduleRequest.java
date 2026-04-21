@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public class UpdateScheduleRequest {
     private String title;
-    private String authorName;
+    private String contents;
 }

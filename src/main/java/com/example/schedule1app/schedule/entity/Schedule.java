@@ -1,6 +1,7 @@
 package com.example.schedule1app.schedule.entity;
 
 import com.example.schedule1app.gobal.entity.BaseEntity;
+import com.example.schedule1app.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -16,12 +17,14 @@ public class Schedule extends BaseEntity {
     private Long id;
     private String title;
     private String contents;
-    private String authorName;
+    @ManyToOne(fetch = FetchType.LAZY) // 여러 일정은 한 명의 유저에게 속합니다.
+    @JoinColumn(name = "user_id") // DB 테이블의 외래 키(FK) 컬럼명을 설정합니다.
+    private User user;
 
-    public Schedule(String title, String contents, String authorName) {
+    public Schedule(String title, String contents, User user) {
         this.title = title;
         this.contents = contents;
-        this.authorName = authorName;
+        this.user = user;
 
     }
 

@@ -10,16 +10,14 @@ public class UpdateScheduleResponse {
     private final Long id;
     private final String title;
     private final String contents;
-    private final String authorName;
-    private final LocalDateTime createdAt;
+    private final Long userId;
     private final LocalDateTime modifiedAt;
 
-    private UpdateScheduleResponse(Long id, String title, String contents, String authorName, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    private UpdateScheduleResponse(Long id, String title, String contents, Long userId, LocalDateTime modifiedAt) {
         this.id = id;
         this.title = title;
         this.contents = contents;
-        this.authorName = authorName;
-        this.createdAt = createdAt;
+        this.userId = userId;
         this.modifiedAt = modifiedAt;
     }
 
@@ -28,8 +26,7 @@ public class UpdateScheduleResponse {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
-                schedule.getAuthorName(),
-                schedule.getCreatedAt(),
+                schedule.getUser().getId(),
                 schedule.getModifiedAt()
         );
     }
