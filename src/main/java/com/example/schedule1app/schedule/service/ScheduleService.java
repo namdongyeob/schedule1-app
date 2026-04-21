@@ -3,6 +3,8 @@ package com.example.schedule1app.schedule.service;
 import com.example.schedule1app.schedule.dto.*;
 import com.example.schedule1app.schedule.entity.Schedule;
 import com.example.schedule1app.schedule.repository.ScheduleRepository;
+import com.example.schedule1app.user.entity.User;
+import com.example.schedule1app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +15,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CreateScheduleResponse create(CreateScheduleRequest request) {
+        User user = userRepository.findById(request.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
         Schedule schedule = new Schedule(
                 request.getTitle(),
                 request.getContents(),
-                request.getAuthorName());
+                user);
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return CreateScheduleResponse.from(savedSchedule);
     }
@@ -43,7 +48,7 @@ public class ScheduleService {
     public UpdateScheduleResponse update(UpdateScheduleRequest request, Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("없는 일정입니다."));
-        schedule.update(request.getTitle(), request.getAuthorName());
+        schedule.update(request.getTitle(), request.getContents());
         return UpdateScheduleResponse.from(schedule);
     }
 

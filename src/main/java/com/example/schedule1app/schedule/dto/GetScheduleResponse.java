@@ -10,15 +10,17 @@ public class GetScheduleResponse {
     private final Long id;
     private final String title;
     private final String contents;
-    private final String authorName;
+    private final Long userId;
+    private final String username;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public GetScheduleResponse(Long id, String title, String contents, String authorName, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    private GetScheduleResponse(Long id, String title, String contents, Long userId,String username, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.title = title;
         this.contents = contents;
-        this.authorName = authorName;
+        this.userId = userId;
+        this.username = username;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
@@ -27,7 +29,8 @@ public class GetScheduleResponse {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContents(),
-                schedule.getAuthorName(),
+                schedule.getUser().getId(),
+                schedule.getUser().getUsername(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );

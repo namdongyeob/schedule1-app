@@ -6,5 +6,5 @@ import lombok.Getter;
 public class CreateScheduleRequest {
     private String title;
     private String contents;
-    private String authorName;
+    private Long userId;
 }
