@@ -1,6 +1,7 @@
 package com.example.schedule1app.auth.service;
 
 import com.example.schedule1app.auth.dto.LoginRequest;
+import com.example.schedule1app.gobal.config.PasswordEncoder;
 import com.example.schedule1app.user.entity.User;
 import com.example.schedule1app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 로그인 검증 후 User 반환
     public User login(LoginRequest request) {
@@ -19,7 +21,7 @@ public class AuthService {
                 () -> new IllegalArgumentException("해당 이메일을 가진 유저가 없습니다."));
 
         // 2. 비밀번호 일치 확인 → 다르면 예외
-        if (!user.getPassword().equals(request.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
