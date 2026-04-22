@@ -5,6 +5,8 @@ import com.example.schedule1app.comment.dto.CreateCommentResponse;
 import com.example.schedule1app.comment.dto.GetCommentResponse;
 import com.example.schedule1app.comment.entity.Comment;
 import com.example.schedule1app.comment.repository.CommentRepository;
+import com.example.schedule1app.gobal.excption.ScheduleNotFoundException;
+import com.example.schedule1app.gobal.excption.UserNotFoundException;
 import com.example.schedule1app.schedule.entity.Schedule;
 import com.example.schedule1app.schedule.repository.ScheduleRepository;
 import com.example.schedule1app.user.entity.User;
@@ -25,9 +27,9 @@ public class CommentService {
     @Transactional
     public CreateCommentResponse save(CreateCommentRequest request, Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+                UserNotFoundException::new);
         Schedule schedule = scheduleRepository.findById(request.getScheduleId()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 일정입니다."));
+                ScheduleNotFoundException::new);
         Comment comment = new Comment(request.getContents(), user, schedule);
         Comment savedComment = commentRepository.save(comment);
         return CreateCommentResponse.from(savedComment);

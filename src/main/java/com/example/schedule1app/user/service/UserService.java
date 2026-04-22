@@ -1,6 +1,7 @@
 package com.example.schedule1app.user.service;
 
 import com.example.schedule1app.gobal.config.PasswordEncoder;
+import com.example.schedule1app.gobal.excption.UserNotFoundException;
 import com.example.schedule1app.user.dto.*;
 import com.example.schedule1app.user.entity.User;
 import com.example.schedule1app.user.repository.UserRepository;
@@ -37,7 +38,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public GetUserResponse findOne(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저는 찾을수 없습니다."));
+                UserNotFoundException::new);
         return GetUserResponse.from(user);
 
 
@@ -46,7 +47,7 @@ public class UserService {
     @Transactional
     public UpdateUserResponse update(Long userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저는 찾을수 없습니다."));
+                UserNotFoundException::new);
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         user.update(request.getUsername(), request.getEmail(), encodedPassword);
         return UpdateUserResponse.from(user);
@@ -55,7 +56,7 @@ public class UserService {
     @Transactional
     public void delete(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당 유저를 찾을 수 없습니다."));
+                UserNotFoundException::new);
         userRepository.delete(user);
     }
 }
