@@ -5,6 +5,7 @@ import com.example.schedule1app.comment.dto.CreateCommentResponse;
 import com.example.schedule1app.comment.dto.GetCommentResponse;
 import com.example.schedule1app.comment.service.CommentService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<CreateCommentResponse> createComment(
-            @RequestBody CreateCommentRequest request, HttpSession httpSession) {
+            @Valid @RequestBody CreateCommentRequest request, HttpSession httpSession) {
         Long userId = (Long) httpSession.getAttribute("userId");
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.save(request,userId));
     }
