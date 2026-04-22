@@ -1,11 +1,15 @@
 package com.example.schedule1app.schedule.service;
 
+import com.example.schedule1app.comment.repository.CommentRepository;
 import com.example.schedule1app.schedule.dto.*;
 import com.example.schedule1app.schedule.entity.Schedule;
 import com.example.schedule1app.schedule.repository.ScheduleRepository;
 import com.example.schedule1app.user.entity.User;
 import com.example.schedule1app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +20,7 @@ import java.util.List;
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public CreateScheduleResponse create(CreateScheduleRequest request) {
@@ -33,7 +38,10 @@ public class ScheduleService {
     public List<GetScheduleResponse> getAll() {
         List<Schedule> schedules = scheduleRepository.findAll();
         return schedules.stream()
-                .map(GetScheduleResponse::from)
+                .map(schedule -> GetScheduleResponse.from(  // :: 대신 . 사용!
+                        schedule,
+                        commentRepository.countByScheduleId(schedule.getId())
+                ))
                 .toList();
     }
 
@@ -41,7 +49,8 @@ public class ScheduleService {
     public GetScheduleResponse getOne(Long scheduleId) {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("존재하지 않은 일정입니다."));
-        return GetScheduleResponse.from(schedule);
+        int commentCount = commentRepository.countByScheduleId(scheduleId);
+        return GetScheduleResponse.from(schedule, commentCount);
     }
 
     @Transactional
@@ -57,5 +66,10 @@ public class ScheduleService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new IllegalStateException("존재하는 일정이 없습니다."));
         scheduleRepository.delete(schedule);
+    }
+    @Transactional(readOnly = true)
+    public Page<SchedulePageResponse> getAllPaged(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return scheduleRepository.findAllWithCommentCount(pageable);
     }
 }

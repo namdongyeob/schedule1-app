@@ -14,8 +14,9 @@ public class GetScheduleResponse {
     private final String username;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
+    private final int commentCount;
 
-    private GetScheduleResponse(Long id, String title, String contents, Long userId,String username, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    private GetScheduleResponse(Long id, String title, String contents, Long userId,String username, LocalDateTime createdAt, LocalDateTime modifiedAt,int commentCount) {
         this.id = id;
         this.title = title;
         this.contents = contents;
@@ -23,8 +24,10 @@ public class GetScheduleResponse {
         this.username = username;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
+        this.commentCount = commentCount;
+
     }
-    public static GetScheduleResponse from(Schedule schedule){
+    public static GetScheduleResponse from(Schedule schedule, int commentCount){
         return new GetScheduleResponse(
                 schedule.getId(),
                 schedule.getTitle(),
@@ -32,7 +35,8 @@ public class GetScheduleResponse {
                 schedule.getUser().getId(),
                 schedule.getUser().getUsername(),
                 schedule.getCreatedAt(),
-                schedule.getModifiedAt()
+                schedule.getModifiedAt(),
+                commentCount
         );
     }
 }

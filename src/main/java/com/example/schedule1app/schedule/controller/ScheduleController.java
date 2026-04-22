@@ -3,6 +3,7 @@ package com.example.schedule1app.schedule.controller;
 import com.example.schedule1app.schedule.dto.*;
 import com.example.schedule1app.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +43,12 @@ public class ScheduleController {
     public ResponseEntity<Void> delete(@PathVariable Long scheduleId) {
         scheduleService.delete(scheduleId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("/paged")
+    public ResponseEntity<Page<SchedulePageResponse>> getAllPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(scheduleService.getAllPaged(page, size));
     }
 }
